@@ -8,7 +8,7 @@ const eventsFromDashboard = [
 	{
 		id: "1",
 		title: "Trip to Tower of London",
-		date: "2018-03-27T11:00:00+00:00",
+		date: "2018-03-27",
 		category: "culture",
 		description:
 			"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus sollicitudin ligula eu leo tincidunt, quis scelerisque magna dapibus. Sed eget ipsum vel arcu vehicula ullamcorper.",
@@ -32,7 +32,7 @@ const eventsFromDashboard = [
 	{
 		id: "2",
 		title: "Trip to Punch and Judy Pub",
-		date: "2018-03-28T14:00:00+00:00",
+		date: "2018-03-28",
 		category: "drinks",
 		description:
 			"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus sollicitudin ligula eu leo tincidunt, quis scelerisque magna dapibus. Sed eget ipsum vel arcu vehicula ullamcorper.",
@@ -58,49 +58,52 @@ const eventsFromDashboard = [
 class EventDashboard extends Component {
 	state = {
 		events: eventsFromDashboard,
-		isOpen: false
+		isOpen: false,
+		selectedEvent: null
 	};
 
-	handleOpenToggle = () => {
-		// this.setState({
-		// 	isOpen: true
-		// });
+	// handleIsOpenToggle = () => {
+	// 	this.setState(({ isOpen }) => ({
+	// 		isOpen: !isOpen
+	// 	}));
 
-		this.setState(() => ({
-			isOpen: true
-		}));
+	// this.setState(prevState => ({
+	// 	isOpen: !prevState.isOpen
+	// }));
+	// if (this.state.isOpen === false) {
+	// 	this.setState({
+	// 		isOpen: true
+	// 	});
+	// } else if (this.state.isOpen === true) {
+	// 	this.setState({
+	// 		isOpen: false
+	// 	});
+	// }
 
-		// this.setState(prevState => ({
-		// 	isOpen: !prevState.isOpen
-		// }));
+	// this.setState(() => {
+	// 	if (this.state.isOpen === false) {
+	// 		return {
+	// 			isOpen: true
+	// 		};
+	// 	} else if (this.state.isOpen === true) {
+	// 		return {
+	// 			isOpen: false
+	// 		};
+	// 	}
+	// });
+	// };
 
-		// if (this.state.isOpen === false) {
-		// 	this.setState({
-		// 		isOpen: true
-		// 	});
-		// } else if (this.state.isOpen === true) {
-		// 	this.setState({
-		// 		isOpen: false
-		// 	});
-		// }
-
-		// this.setState(() => {
-		// 	if (this.state.isOpen === false) {
-		// 		return {
-		// 			isOpen: true
-		// 		};
-		// 	} else if (this.state.isOpen === true) {
-		// 		return {
-		// 			isOpen: false
-		// 		};
-		// 	}
-		// });
+	handleCreateFormOpen = () => {
+		this.setState({
+			isOpen: true,
+			selectedEvent: null
+		});
 	};
 
-	handleCloseToggle = () => {
-		this.setState(() => ({
+	handleFormCancel = () => {
+		this.setState({
 			isOpen: false
-		}));
+		});
 	};
 
 	handleCreateEvent = newEvent => {
@@ -112,19 +115,59 @@ class EventDashboard extends Component {
 		}));
 	};
 
+	handleSelectEvent = event => {
+		console.log(event);
+		this.setState({
+			selectedEvent: event,
+			isOpen: true
+		});
+	};
+
+	handleUpdateEvent = updatedEvent => {
+		this.setState(({ events }) => ({
+			events: events.map(event => {
+				if (event.id === updatedEvent.id) {
+					return { ...updatedEvent };
+				} else {
+					return event;
+				}
+			}),
+			isOpen: false,
+			selectedEvent: null
+		}));
+	};
+
+	handleDeleteEvent = id => {
+		this.setState(({ events }) => ({
+			events: events.filter(e => e.id !== id)
+		}));
+	};
+
 	render() {
-		const { events, isOpen } = this.state;
+		const { events, isOpen, selectedEvent } = this.state;
 		return (
 			<Grid>
 				<Grid.Column width={10}>
-					<EventList events={events} />
+					<EventList
+						events={events}
+						selectEvent={this.handleSelectEvent}
+						deleteEvent={this.handleDeleteEvent}
+					/>
 				</Grid.Column>
 				<Grid.Column width={6}>
-					<Button onClick={this.handleOpenToggle} positive content="Create Event" />
+					<Button
+						onClick={this.handleCreateFormOpen}
+						positive
+						content="Create Event"
+					/>
 					{isOpen && (
 						<EventForm
+							// key={selectedEvent.id}
+							key={selectedEvent ? selectedEvent.id : 0}
+							updateEvent={this.handleUpdateEvent}
+							selectedEvent={selectedEvent}
 							createEvent={this.handleCreateEvent}
-							cancelFormOpen={this.handleCloseToggle}
+							cancelFormOpen={this.handleFormCancel}
 						/>
 					)}
 				</Grid.Column>

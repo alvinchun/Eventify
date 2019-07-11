@@ -9,22 +9,42 @@ class EventForm extends Component {
 		venue: "",
 		hostedBy: ""
 	};
+
+	componentDidMount = () => {
+		if (this.props.selectedEvent !== null) {
+			this.setState({
+				...this.props.selectedEvent
+			});
+		}
+	};
 	//refs can be used only in class components
 	//But now useRef() hook is used in react hooks now
 	handleFormSubmit = evt => {
 		evt.preventDefault();
 		// console.log(this.refs.title.value);
-		this.props.createEvent(this.state);
+		if (this.state.id) {
+			this.props.updateEvent(this.state);
+		} else {
+			this.props.createEvent(this.state);
+		}
 	};
 
-	handleInputChange = ({ target: { name, value } }) => {
+	// with [evt.target.name], we can now approach object property string value
+
+	handleInputChange = evt => {
 		this.setState({
-			[name]: value
+			[evt.target.name]: evt.target.value
 		});
 	};
 
+	// handleInputChange = ({ target: { name, value } }) => {
+	// 	this.setState({
+	// 		[name]: value
+	// 	});
+	// };
+
 	render() {
-		const { cancelFormOpen, createEvent } = this.props;
+		const { cancelFormOpen } = this.props;
 		const { title, date, city, venue, hostedBy } = this.state;
 
 		return (
