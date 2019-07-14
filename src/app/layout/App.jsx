@@ -1,6 +1,6 @@
 import React from "react";
 import { Container } from "semantic-ui-react";
-import { Route, Router } from "react-router-dom";
+import { Route, Switch, withRouter } from "react-router-dom";
 import EventDashboard from "../../features/event/EventDashboard/EventDashboard";
 import NavBar from "../../features/nav/NavBar/NavBar";
 import HomePage from "../../features/home/HomePage";
@@ -17,18 +17,20 @@ function App() {
 			<Route exact path="/" component={HomePage} />
 			<Route
 				path="/(.+)"
-				render={() => (
+				render={({ location }) => (
 					<>
 						<NavBar />
 						<Container className="main">
-							{/* history props (object) is reachable inside of the Route component */}
-							<Route path="/events" component={EventDashboard} />
-							<Route path="/events/:id" component={EventDetailedPage} />
-							<Route path="/people" component={PeopleDashboard} />
-							<Route path="/profile/:id" component={UserDetailedPage} />
-							<Route path="/settings" component={SettingsDashboard} />
-							<Route path="/createEvent" component={EventForm} />
-							<Route path="/test" component={TestComponent} />
+							<Switch key={location.key}>
+								{/* history props (object) is reachable inside of the Route component */}
+								<Route exact path="/events" component={EventDashboard} />
+								<Route path="/events/:id" component={EventDetailedPage} />
+								<Route path="/people" component={PeopleDashboard} />
+								<Route path="/profile/:id" component={UserDetailedPage} />
+								<Route path="/settings" component={SettingsDashboard} />
+								<Route path={["/createEvent", "/manage/:id"]} component={EventForm} />
+								<Route path="/test" component={TestComponent} />
+							</Switch>
 						</Container>
 					</>
 				)}
@@ -37,4 +39,5 @@ function App() {
 	);
 }
 
-export default App;
+//withRouter = we now have the access to routing props
+export default withRouter(App);
