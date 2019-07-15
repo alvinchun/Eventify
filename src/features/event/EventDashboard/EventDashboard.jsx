@@ -2,11 +2,10 @@ import React, { Component } from "react";
 import { Grid } from "semantic-ui-react";
 import { connect } from "react-redux";
 import EventList from "../EventListItem.jsx/EventList";
-import cuid from "cuid";
 import { createEvent, deleteEvent, updateEvent } from "../eventActions";
 
 const mapStateToProps = state => ({
-	events: state.eventss
+	events: state.events
 });
 
 const mapDispatchToProps = {
@@ -47,15 +46,15 @@ class EventDashboard extends Component {
 	// });
 	// };
 
-	handleCreateEvent = newEvent => {
-		newEvent.id = cuid();
-		newEvent.hostPhotoURL = "/images/user.png";
-		this.props.createEvent(newEvent);
-	};
+	// handleCreateEvent = newEvent => {
+	// 	newEvent.id = cuid();
+	// 	newEvent.hostPhotoURL = "/images/user.png";
+	// 	this.props.createEvent(newEvent);
+	// };
 
-	handleUpdateEvent = updatedEvent => {
-		this.props.updateEvent(updatedEvent);
-	};
+	// handleUpdateEvent = updatedEvent => {
+	// 	this.props.updateEvent(updatedEvent);
+	// };
 
 	// handleUpdateEvent = updatedEvent => {
 	// 	this.props.updateEvent(updatedEvent);
@@ -90,8 +89,9 @@ class EventDashboard extends Component {
 				<Grid.Column width={10}>
 					<EventList events={events} deleteEvent={this.handleDeleteEvent} />
 				</Grid.Column>
-				<Grid.Column width={6} />
-				<h2>Activity Feed</h2>
+				<Grid.Column width={6}>
+					<h2>Activity Feed</h2>
+				</Grid.Column>
 			</Grid>
 		);
 	}

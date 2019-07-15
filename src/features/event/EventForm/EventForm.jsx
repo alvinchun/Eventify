@@ -15,8 +15,8 @@ const mapStateToProps = (state, ownProps) => {
 		hostedBy: ""
 	};
 
-	if (eventId && state.eventss.length > 0) {
-		event = state.eventss.filter(event => event.id === eventId)[0];
+	if (eventId && state.events.length > 0) {
+		event = state.events.filter(event => event.id === eventId)[0];
 	}
 
 	return {
@@ -49,6 +49,7 @@ class EventForm extends Component {
 		// console.log(this.refs.title.value);
 		if (this.state.id) {
 			this.props.updateEvent(this.state);
+			this.props.history.push(`/events/${this.state.id}`);
 		} else {
 			const newEvent = {
 				...this.state,
@@ -59,22 +60,23 @@ class EventForm extends Component {
 			newEvent.id = cuid();
 			newEvent.hostPhotoURL = "/images/user.png";
 			this.props.createEvent(newEvent);
+			this.props.history.push("/events");
 		}
 	};
 
 	// with [evt.target.name], we can now approach object property string value
 
-	handleInputChange = evt => {
-		this.setState({
-			[evt.target.name]: evt.target.value
-		});
-	};
-
-	// handleInputChange = ({ target: { name, value } }) => {
+	// handleInputChange = evt => {
 	// 	this.setState({
-	// 		[name]: value
+	// 		[evt.target.name]: evt.target.value
 	// 	});
 	// };
+
+	handleInputChange = ({ target: { name, value } }) => {
+		this.setState({
+			[name]: value
+		});
+	};
 
 	render() {
 		const { title, date, city, venue, hostedBy } = this.state;
