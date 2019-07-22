@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { incrementCounter, decrementCounter } from "./testActions";
+import TestPlaceInput from "./TestPlaceInput";
 // mapping our store states to our component props
 
 // Kicking data in store into component props to let the component know the current state
@@ -24,6 +25,9 @@ class TestComponent extends Component {
 				<h3>The answer is: {dataaa}</h3>
 				<button onClick={decrementCounter}>-</button>
 				<button onClick={incrementCounter}>+</button>
+				<br />
+				<br />
+				<TestPlaceInput />
 			</div>
 		);
 	}

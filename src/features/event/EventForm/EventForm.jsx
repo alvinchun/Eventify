@@ -1,3 +1,5 @@
+/*global google*/
+
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { reduxForm, Field } from "redux-form";
@@ -7,13 +9,15 @@ import {
 	isRequired,
 	hasLengthGreaterThan
 } from "revalidate";
+import { geocodeByAddress, getLatLng } from "react-places-autocomplete";
 import { Segment, Form, Button, Grid, Header } from "semantic-ui-react";
 import { createEvent, updateEvent } from "../eventActions";
 import cuid from "cuid";
 import TextInput from "../../../app/common/form/TextInput";
 import TextArea from "../../../app/common/form/TextArea";
 import SelectInput from "../../../app/common/form/SelectInput";
-import DateInput from "../../../app/common/form/DateInput";
+// import DateInput from "../../../app/common/form/DateInput";
+import PlaceInput from "../../../app/common/form/PlaceInput";
 
 const mapStateToProps = (state, ownProps) => {
 	const eventId = ownProps.match.params.id;
@@ -58,9 +62,15 @@ const category = [
 ];
 
 class EventForm extends Component {
+	state = {
+		cityLatLng: {},
+		venueLatLng: {}
+	};
+
 	//refs can be used only in class components
 	//But now useRef() hook is used in react hooks now
 	onFormSubmit = values => {
+		values.venueLatLng = this.state.venueLatLng;
 		// console.log(values);
 		if (this.props.initialValues.id) {
 			this.props.updateEvent(values);
@@ -75,6 +85,34 @@ class EventForm extends Component {
 			this.props.createEvent(newEvent);
 			this.props.history.push(`/events/${newEvent.id}`);
 		}
+	};
+
+	handleCitySelect = selectedCity => {
+		geocodeByAddress(selectedCity)
+			.then(results => getLatLng(results[0]))
+			.then(latLng =>
+				this.setState({
+					cityLatLng: latLng
+				})
+			)
+			.then(() => {
+				this.props.change("city", selectedCity);
+			})
+			.catch(error => console.error("Error", error));
+	};
+
+	handleVenueSelect = selectedVenue => {
+		geocodeByAddress(selectedVenue)
+			.then(results => getLatLng(results[0]))
+			.then(latLng =>
+				this.setState({
+					venueLatLng: latLng
+				})
+			)
+			.then(() => {
+				this.props.change("venue", selectedVenue);
+			})
+			.catch(error => console.error("Error", error));
 	};
 
 	// with [evt.target.name], we can now approach object property string value
@@ -115,20 +153,32 @@ class EventForm extends Component {
 								placeholder="Tell me more about the event!"
 							/>
 							<Header sub color="blue" content="Event Location Details" />
-							<Field name="city" component={TextInput} placeholder="In which city?" />
 							<Field
-								name="venue"
-								component={TextInput}
-								placeholder="At which venue?"
+								name="city"
+								component={PlaceInput}
+								options={{ types: ["(cities)"] }}
+								onSelect={this.handleCitySelect}
+								placeholder="In which city?"
 							/>
 							<Field
+								name="venue"
+								component={PlaceInput}
+								placeholder="At which venue?"
+								options={{
+									location: new google.maps.LatLng(this.state.cityLatLng),
+									radius: 1000,
+									types: ["establishment"]
+								}}
+								onSelect={this.handleVenueSelect}
+							/>
+							{/* <Field
 								name="date"
 								component={DateInput}
 								placeholder="When does it happen?"
 								dateFormat="dd LLL yyyy h:mm a"
 								showTimeSelect
 								timeFormat="HH:mm"
-							/>
+							/> */}
 
 							<Button
 								disabled={invalid || submitting || pristine}
