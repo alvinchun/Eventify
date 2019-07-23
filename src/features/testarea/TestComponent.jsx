@@ -4,10 +4,7 @@ import { incrementCounter, decrementCounter } from "./testActions";
 import TestPlaceInput from "./TestPlaceInput";
 import SimpleMap from "./SimpleMap";
 // import PlacesAutocomplete from "react-places-autocomplete";
-import PlacesAutocomplete, {
-	geocodeByAddress,
-	getLatLng
-} from "react-places-autocomplete";
+import { geocodeByAddress, getLatLng } from "react-places-autocomplete";
 
 // mapping our store states to our component props
 
@@ -33,7 +30,7 @@ class TestComponent extends Component {
 	handleSelect = address => {
 		geocodeByAddress(address)
 			.then(results => getLatLng(results[0]))
-			.then(latLng => this.setState({ latlon: latLng }))
+			.then(latLng => this.setState({ latlng: latLng }))
 			.catch(error => console.error("Error", error));
 	};
 
@@ -49,7 +46,7 @@ class TestComponent extends Component {
 				<br />
 				<br />
 				<TestPlaceInput selectAddress={this.handleSelect} />
-				<SimpleMap latlng={this.state.latlng} />
+				<SimpleMap key={this.state.latlng.lng} latlng={this.state.latlng} />
 			</div>
 		);
 	}
