@@ -11,10 +11,8 @@ const modalLookup = {
 };
 
 const mapState = state => ({
-	currentModal: state.modals;
+	currentModal: state.modals
 });
-
-
 
 const ModalManager = ({ currentModal }) => {
 	let renderedModal;

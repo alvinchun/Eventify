@@ -1,4 +1,6 @@
 import { INCREMENT_COUNTER, DECREMENT_COUNTER } from "./testConstants";
+import { asyncActionFinish } from "../async/asyncActions";
+import { ASYNC_ACTION_START } from "../async/asyncConstants";
 
 //Creating Action Creator
 export const incrementCounter = () => {
@@ -12,3 +14,27 @@ export const decrementCounter = () => {
 		type: DECREMENT_COUNTER
 	};
 };
+
+const delay = (ms) => {
+	return new Promise(resolve => setTimeout(resolve, ms))
+}
+
+export const incrementAsync = (name) => {
+	return async dispatch => {
+		// asynchronous reducer tells store that loading flag to be true
+		dispatch({type: ASYNC_ACTION_START, payload: name})
+		await delay(1000)
+		dispatch(incrementCounter())
+		dispatch(asyncActionFinish());
+	}
+}
+
+export const decrementAsync = (name) => {
+	return async dispatch => {
+		dispatch({ type: ASYNC_ACTION_START, payload: name });
+		await delay(1000)
+		// It works with type instead of just as a function 
+		dispatch({type: DECREMENT_COUNTER});
+		dispatch(asyncActionFinish());
+	}
+}
