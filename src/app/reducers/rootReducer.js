@@ -14,7 +14,7 @@ const rootReducer = combineReducers({
 	events: eventReducer,
 	modals: modalReducer,
 	auth: authReducer,
-	async: asyncReducer 
+	async: asyncReducer
 });
 
 export default rootReducer;

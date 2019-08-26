@@ -7,7 +7,10 @@ import * as serviceWorker from "./serviceWorker";
 import { BrowserRouter } from "react-router-dom";
 import { configureStore } from "./app/store/configureStore";
 import ScrollToTop from "./app/common/util/ScrollToTop";
+import { loadEvents } from "./features/event/eventActions";
+
 const store = configureStore();
+store.dispatch(loadEvents());
 // console.log(store.getState());
 const rootEl = document.getElementById("root");
 // Provider and connect are part of react-redux components

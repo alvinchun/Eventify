@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { Component, Fragment } from "react";
 import { connect } from "react-redux";
 import { Menu, Container, Button } from "semantic-ui-react";
 import { NavLink, Link, withRouter } from "react-router-dom";
@@ -8,79 +8,82 @@ import { openModal } from "../../modals/modalActions";
 import { logout } from "../../auth/authActions";
 
 const mapStateToProps = state => ({
-	auth: state.auth
+  auth: state.auth
 });
 
 const mapDisPatchToProps = {
-	openModal,
-	logout
+  openModal,
+  logout
 };
 
 class NavBar extends Component {
-	// state = {
-	// 	authenticated: false
-	// };
+  // state = {
+  // 	authenticated: false
+  // };
 
-	handleSignIn = () => {
-		this.props.openModal("LoginModal");
-	};
+  handleSignIn = () => {
+    this.props.openModal("LoginModal");
+  };
 
-	handleRegister = () => {
-		this.props.openModal("RegisterModal");
-	};
+  handleRegister = () => {
+    this.props.openModal("RegisterModal");
+  };
 
-	handleSignOut = () => {
-		this.props.logout();
-		this.props.history.push("/");
-	};
+  handleSignOut = () => {
+    this.props.logout();
+    this.props.history.push("/");
+  };
 
-	render() {
-		// const { authenticated } = this.state;
-		const { auth } = this.props;
-		const authenticated = auth.authenticated;
+  render() {
+    // const { authenticated } = this.state;
+    const { auth } = this.props;
+    const { authenticated } = auth;
 
-		return (
-			<Menu inverted fixed="top">
-				<Container>
-					<Menu.Item as={NavLink} exact to="/" header>
-						<img src="images/logo.png" alt="logo" />
-						Eventify
-					</Menu.Item>
-					<Menu.Item as={NavLink} exact to="/events" name="Events" />
-					<Menu.Item as={NavLink} to="/people" name="People" />
-					<Menu.Item as={NavLink} to="/test" name="Test" />
-					<Menu.Item>
-						<Button
-							as={Link}
-							to="/createEvent"
-							floated="right"
-							positive
-							inverted
-							content="Create Event"
-						/>
-					</Menu.Item>
-					{authenticated ? (
-						<SignedInMenu
-							signOut={this.handleSignOut}
-							currentUser={auth.currentUser}
-						/>
-					) : (
-						<SignedOutMenu
-							signIn={this.handleSignIn}
-							register={this.handleRegister}
-						/>
-					)}
-				</Container>
-			</Menu>
-		);
-	}
+    return (
+      <Menu inverted fixed="top">
+        <Container>
+          <Menu.Item as={NavLink} exact to="/" header>
+            <img src="images/logo.png" alt="logo" />
+            Eventify
+          </Menu.Item>
+          <Menu.Item as={NavLink} exact to="/events" name="Events" />
+					{authenticated && (<Fragment>
+          <Menu.Item as={NavLink} to="/people" name="People" />
+          <Menu.Item as={NavLink} to="/test" name="Test" />
+          <Menu.Item>
+            <Button
+              as={Link}
+              to="/createEvent"
+              floated="right"
+              positive
+              inverted
+              content="Create Event"
+            />
+          </Menu.Item>
+					</Fragment>)
+					}
+          {authenticated ? (
+            <SignedInMenu
+              signOut={this.handleSignOut}
+              currentUser={auth.currentUser}
+            />
+          ) : (
+            <SignedOutMenu
+              signIn={this.handleSignIn}
+              register={this.handleRegister}
+            />
+          )}
+        </Container>
+      </Menu>
+    );
+  }
 }
 
 // to use the history.push('/')
 export default withRouter(
-	connect(
-		mapStateToProps,
-		mapDisPatchToProps
-	)(NavBar)
+  connect(
+    mapStateToProps,
+    mapDisPatchToProps
+  )(NavBar)
 );
 // export default NavBar;
