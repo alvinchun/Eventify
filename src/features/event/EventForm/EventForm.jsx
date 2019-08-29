@@ -179,7 +179,6 @@ class EventForm extends Component {
 								showTimeSelect
 								timeFormat="HH:mm"
 							/> */}
-
 							<Button
 								disabled={invalid || submitting || pristine}
 								positive

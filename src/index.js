@@ -7,30 +7,37 @@ import * as serviceWorker from "./serviceWorker";
 import { BrowserRouter } from "react-router-dom";
 import { configureStore } from "./app/store/configureStore";
 import ScrollToTop from "./app/common/util/ScrollToTop";
-import { loadEvents } from "./features/event/eventActions";
+// import { loadEvents } from "./features/event/eventActions";
+import ReduxToastr from "react-redux-toastr";
+import "react-redux-toastr/lib/css/react-redux-toastr.min.css";
 
 const store = configureStore();
-store.dispatch(loadEvents());
+
 // console.log(store.getState());
 const rootEl = document.getElementById("root");
 // Provider and connect are part of react-redux components
 let render = () => {
-	ReactDOM.render(
-		<Provider store={store}>
-			<BrowserRouter>
-				<ScrollToTop>
-					<App />
-				</ScrollToTop>
-			</BrowserRouter>
-		</Provider>,
-		rootEl
-	);
+  ReactDOM.render(
+    <Provider store={store}>
+      <BrowserRouter>
+        <ScrollToTop>
+          <ReduxToastr
+            position="bottom-right"
+            transitionIn="fadeIn"
+            transitionOut="fadeOut"
+          />
+          <App />
+        </ScrollToTop>
+      </BrowserRouter>
+    </Provider>,
+    rootEl
+  );
 };
 
 if (module.hot) {
-	module.hot.accept("./app/layout/App", () => {
-		setTimeout(render);
-	});
+  module.hot.accept("./app/layout/App", () => {
+    setTimeout(render);
+  });
 }
 
 render();
