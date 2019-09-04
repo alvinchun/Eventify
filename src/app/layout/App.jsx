@@ -13,32 +13,35 @@ import TestComponent from "../../features/testarea/TestComponent";
 import ModalManager from "../../features/modals/ModalManager";
 
 function App() {
-	return (
-		<Fragment>
-			<ModalManager />
-			<Route exact path="/" component={HomePage} />
-			<Route
-				path="/(.+)"
-				render={({ location }) => (
-					<>
-						<NavBar />
-						<Container className="main">
-							<Switch key={location.key}>
-								{/* history props (object) is reachable inside of the Route component */}
-								<Route exact path="/events" component={EventDashboard} />
-								<Route path="/events/:id" component={EventDetailedPage} />
-								<Route path="/people" component={PeopleDashboard} />
-								<Route path="/profile/:id" component={UserDetailedPage} />
-								<Route path="/settings" component={SettingsDashboard} />
-								<Route path={["/createEvent", "/manage/:id"]} component={EventForm} />
-								<Route path="/test" component={TestComponent} />
-							</Switch>
-						</Container>
-					</>
-				)}
-			/>
-		</Fragment>
-	);
+  return (
+    <Fragment>
+      <ModalManager />
+      <Route exact path="/" component={HomePage} />
+      <Route
+        path="/(.+)"
+        render={({ location }) => (
+          <>
+            <NavBar />
+            <Container className="main">
+              <Switch key={location.key}>
+                {/* history props (object) is reachable inside of the Route component */}
+                <Route exact path="/events" component={EventDashboard} />
+                <Route path="/events/:id" component={EventDetailedPage} />
+                <Route path="/people" component={PeopleDashboard} />
+                <Route path="/profile/:id" component={UserDetailedPage} />
+                <Route path="/settings" component={SettingsDashboard} />
+                <Route
+                  path={["/createEvent", "/manage/:id"]}
+                  component={EventForm}
+                />
+                <Route path="/test" component={TestComponent} />
+              </Switch>
+            </Container>
+          </>
+        )}
+      />
+    </Fragment>
+  );
 }
 
 //withRouter = we now have the access to routing props
