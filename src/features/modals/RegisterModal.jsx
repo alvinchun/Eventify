@@ -8,21 +8,21 @@ import RegisterForm from "../auth/Register/RegisterForm";
 const actions = { closeModal };
 
 class RegisterModal extends Component {
-	render() {
-		return (
-			<Modal size="mini" open={true} onClose={this.props.closeModal}>
-				<Modal.Header>Sign Up to Re-vents!</Modal.Header>
-				<Modal.Content>
-					<Modal.Description>
-						<RegisterForm />
-					</Modal.Description>
-				</Modal.Content>
-			</Modal>
-		);
-	}
+  render() {
+    return (
+      <Modal size="mini" open={true} onClose={this.props.closeModal}>
+        <Modal.Header>Sign Up to Eventify!</Modal.Header>
+        <Modal.Content>
+          <Modal.Description>
+            <RegisterForm />
+          </Modal.Description>
+        </Modal.Content>
+      </Modal>
+    );
+  }
 }
 
 export default connect(
-	null,
-	actions
+  null,
+  actions
 )(RegisterModal);

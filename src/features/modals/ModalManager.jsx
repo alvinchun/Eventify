@@ -5,30 +5,30 @@ import LoginModal from "./LoginModal";
 import RegisterModal from "./RegisterModal";
 
 const modalLookup = {
-	TestModal,
-	LoginModal,
-	RegisterModal
+  TestModal,
+  LoginModal,
+  RegisterModal
 };
 
 const mapState = state => ({
-	currentModal: state.modals
+  currentModal: state.modals
 });
 
 const ModalManager = ({ currentModal }) => {
-	let renderedModal;
+  let renderedModal;
 
-	if (currentModal) {
-		const { modalType, modalProps } = currentModal;
-		const ModalComponent = modalLookup[modalType];
+  if (currentModal) {
+    const { modalType, modalProps } = currentModal;
+    const ModalComponent = modalLookup[modalType];
 
-		renderedModal = <ModalComponent {...modalProps} />;
-	}
+    renderedModal = <ModalComponent {...modalProps} />;
+  }
 
-	return (
-		<div>
-			<span>{renderedModal}</span>
-		</div>
-	);
+  return (
+    <div>
+      <span>{renderedModal}</span>
+    </div>
+  );
 };
 
 export default connect(mapState)(ModalManager);
