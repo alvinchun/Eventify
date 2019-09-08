@@ -9,7 +9,7 @@ const firebaseConfig = {
   authDomain: "eventify-247223.firebaseapp.com",
   databaseURL: "https://eventify-247223.firebaseio.com",
   projectId: "eventify-247223",
-  storageBucket: "",
+  storageBucket: "eventify-247223.appspot.com",
   messagingSenderId: "520705394",
   appId: "1:520705394:web:2858208acc98b127"
 };
