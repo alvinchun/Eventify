@@ -1,17 +1,13 @@
 import React, { useState, useEffect, Fragment } from "react";
 import { connect } from "react-redux";
-import {
-  Image,
-  Segment,
-  Header,
-  Divider,
-  Grid,
-  Button,
-  Card
-} from "semantic-ui-react";
+import { Segment, Header, Divider, Grid, Button } from "semantic-ui-react";
 import DropzoneInput from "./DropzoneInput";
 import CropperInput from "./CropperInput";
-import { uploadProfileImage } from "../../userActions";
+import {
+  uploadProfileImage,
+  deletePhoto,
+  setMainPhoto
+} from "../../userActions";
 import { toastr } from "react-redux-toastr";
 import { firestoreConnect } from "react-redux-firebase";
 import { compose } from "redux";
@@ -29,23 +25,35 @@ const query = ({ auth }) => {
 };
 
 const actions = {
-  uploadProfileImage
+  uploadProfileImage,
+  deletePhoto,
+  setMainPhoto
 };
 
 const mapState = state => ({
   auth: state.firebase.auth,
-  profile: state.firebase.profile
+  profile: state.firebase.profile,
+  photos: state.firestore.ordered.photos,
+  loading: state.async.loading
 });
 
-const PhotosPage = ({ uploadProfileImage }) => {
+const PhotosPage = ({
+  uploadProfileImage,
+  photos,
+  profile,
+  deletePhoto,
+  setMainPhoto,
+  loading
+}) => {
   const [files, setFiles] = useState([]);
   const [image, setImage] = useState(null);
+  const [cropResult, setCropResult] = useState("");
 
   useEffect(() => {
     return () => {
       files.forEach(file => URL.revokeObjectURL(file.preview));
     };
-  }, [files]);
+  }, [files, cropResult]);
 
   const handleUploadImage = async () => {
     try {
@@ -61,6 +69,23 @@ const PhotosPage = ({ uploadProfileImage }) => {
   const handleCancelCrop = async () => {
     setFiles([]);
     setImage(null);
+    setCropResult("");
+  };
+
+  const handleDeletePhoto = async photo => {
+    try {
+      await deletePhoto(photo);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const handleSetMainPhoto = async photo => {
+    try {
+      await setMainPhoto(photo);
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (
@@ -95,12 +120,14 @@ const PhotosPage = ({ uploadProfileImage }) => {
               />
               <Button.Group>
                 <Button
+                  loading={loading}
                   onClick={handleUploadImage}
                   style={{ width: "100px" }}
                   positive
                   icon="check"
                 />
                 <Button
+                  disabled={loading}
                   onClick={handleCancelCrop}
                   style={{ width: "100px" }}
                   negative
@@ -113,7 +140,12 @@ const PhotosPage = ({ uploadProfileImage }) => {
       </Grid>
 
       <Divider />
-      <UserPhotos />
+      <UserPhotos
+        photos={photos}
+        profile={profile}
+        deletePhoto={handleDeletePhoto}
+        setMainPhoto={handleSetMainPhoto}
+      />
     </Segment>
   );
 };

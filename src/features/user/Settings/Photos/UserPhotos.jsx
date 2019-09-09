@@ -1,26 +1,40 @@
 import React, { Fragment } from "react";
 import { Header, Card, Image, Button } from "semantic-ui-react";
 
-const UserPhotos = () => {
+const UserPhotos = ({ photos, profile, deletePhoto, setMainPhoto }) => {
+  let filteredPhoto;
+
+  if (photos) {
+    filteredPhoto = photos.filter(photo => {
+      return photo.url !== profile.photoURL;
+    });
+  }
   return (
     <Fragment>
       <Header sub color="teal" content="All Photos" />
 
       <Card.Group itemsPerRow={5}>
         <Card>
-          <Image src="https://randomuser.me/api/portraits/men/20.jpg" />
+          <Image src={profile.photoURL || "/assets/user.png"} />
           <Button positive>Main Photo</Button>
         </Card>
-
-        <Card>
-          <Image src="https://randomuser.me/api/portraits/men/20.jpg" />
-          <div className="ui two buttons">
-            <Button basic color="green">
-              Main
-            </Button>
-            <Button basic icon="trash" color="red" />
-          </div>
-        </Card>
+        {photos &&
+          filteredPhoto.map(photo => (
+            <Card key={photo.id}>
+              <Image src={photo.url} />
+              <div className="ui two buttons">
+                <Button onClick={() => setMainPhoto(photo)} basic color="green">
+                  Main
+                </Button>
+                <Button
+                  onClick={() => deletePhoto(photo)}
+                  basic
+                  icon="trash"
+                  color="red"
+                />
+              </div>
+            </Card>
+          ))}
       </Card.Group>
     </Fragment>
   );
