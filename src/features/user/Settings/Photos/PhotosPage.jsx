@@ -13,10 +13,29 @@ import DropzoneInput from "./DropzoneInput";
 import CropperInput from "./CropperInput";
 import { uploadProfileImage } from "../../userActions";
 import { toastr } from "react-redux-toastr";
+import { firestoreConnect } from "react-redux-firebase";
+import { compose } from "redux";
+import UserPhotos from "./UserPhotos";
+
+const query = ({ auth }) => {
+  return [
+    {
+      collection: "users",
+      doc: auth.uid,
+      subcollections: [{ collection: "photos" }],
+      storeAs: "photos"
+    }
+  ];
+};
 
 const actions = {
   uploadProfileImage
 };
+
+const mapState = state => ({
+  auth: state.firebase.auth,
+  profile: state.firebase.profile
+});
 
 const PhotosPage = ({ uploadProfileImage }) => {
   const [files, setFiles] = useState([]);
@@ -84,7 +103,7 @@ const PhotosPage = ({ uploadProfileImage }) => {
                 <Button
                   onClick={handleCancelCrop}
                   style={{ width: "100px" }}
-                  positive
+                  negative
                   icon="close"
                 />
               </Button.Group>
@@ -94,29 +113,15 @@ const PhotosPage = ({ uploadProfileImage }) => {
       </Grid>
 
       <Divider />
-      <Header sub color="teal" content="All Photos" />
-
-      <Card.Group itemsPerRow={5}>
-        <Card>
-          <Image src="https://randomuser.me/api/portraits/men/20.jpg" />
-          <Button positive>Main Photo</Button>
-        </Card>
-
-        <Card>
-          <Image src="https://randomuser.me/api/portraits/men/20.jpg" />
-          <div className="ui two buttons">
-            <Button basic color="green">
-              Main
-            </Button>
-            <Button basic icon="trash" color="red" />
-          </div>
-        </Card>
-      </Card.Group>
+      <UserPhotos />
     </Segment>
   );
 };
 
-export default connect(
-  null,
-  actions
+export default compose(
+  connect(
+    mapState,
+    actions
+  ),
+  firestoreConnect(auth => query(auth))
 )(PhotosPage);
